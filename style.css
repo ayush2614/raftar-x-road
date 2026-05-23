@@ -2,54 +2,62 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
+html,
 body {
-  background: radial-gradient(circle, #172554, #020617);
-  font-family: Arial, sans-serif;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
+  touch-action: none;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle, #172554, #020617);
 }
 
 .hud {
   position: fixed;
-  top: 15px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: 410px;
+  width: min(410px, 94vw);
   display: flex;
   justify-content: space-between;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.92);
   color: white;
   padding: 12px;
   border-radius: 14px;
-  z-index: 50;
-  box-shadow: 0 0 20px rgba(56,189,248,0.5);
+  z-index: 999;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+  font-size: 14px;
 }
 
 .gameArea {
-  width: 420px;
-  height: 100vh;
+  width: min(420px, 100vw);
+  height: 100dvh;
   background: #374151;
   margin: auto;
   position: relative;
   overflow: hidden;
-  border-left: 8px solid #22c55e;
-  border-right: 8px solid #22c55e;
+  border-left: 7px solid #22c55e;
+  border-right: 7px solid #22c55e;
 }
 
 .roadLine {
   position: absolute;
-  width: 12px;
-  height: 100px;
+  width: 10px;
+  height: 95px;
   background: white;
   left: 50%;
   transform: translateX(-50%);
   border-radius: 10px;
+  z-index: 1;
 }
 
 .line1 { top: -100px; }
-.line2 { top: 220px; }
-.line3 { top: 540px; }
+.line2 { top: 180px; }
+.line3 { top: 460px; }
+.line4 { top: 740px; }
 
 .car,
 .enemy {
@@ -60,11 +68,30 @@ body {
 }
 
 .car {
-  bottom: 40px;
-  left: 180px;
+  left: 50%;
+  bottom: 130px;
+  transform: translateX(-50%);
   background: linear-gradient(#ef4444, #7f1d1d);
   box-shadow: 0 0 20px #ef4444;
-  z-index: 5;
+  z-index: 50;
+}
+
+.enemy {
+  top: -200px;
+  background: linear-gradient(#facc15, #a16207);
+  box-shadow: 0 0 15px #facc15;
+  z-index: 30;
+}
+
+.enemy1 {
+  left: 70px;
+}
+
+.enemy2 {
+  left: 280px;
+  top: -520px;
+  background: linear-gradient(#38bdf8, #075985);
+  box-shadow: 0 0 15px #38bdf8;
 }
 
 .car::before,
@@ -91,40 +118,26 @@ body {
   border-radius: 10px;
 }
 
-.enemy {
-  top: -160px;
-  background: linear-gradient(#facc15, #a16207);
-  box-shadow: 0 0 15px #facc15;
-}
-
-.enemy1 { left: 70px; }
-
-.enemy2 {
-  left: 280px;
-  top: -500px;
-  background: linear-gradient(#38bdf8, #075985);
-}
-
 .coin {
   position: absolute;
-  top: -250px;
+  top: -300px;
   left: 180px;
   font-size: 32px;
-  z-index: 4;
+  z-index: 40;
   filter: drop-shadow(0 0 10px gold);
 }
 
 .screen {
   position: absolute;
   inset: 0;
-  background: rgba(2, 6, 23, 0.9);
+  background: rgba(2, 6, 23, 0.92);
   color: white;
   display: none;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   text-align: center;
-  z-index: 30;
+  z-index: 500;
   padding: 20px;
 }
 
@@ -133,7 +146,7 @@ body {
 }
 
 .screen h1 {
-  font-size: 38px;
+  font-size: 36px;
   margin-bottom: 12px;
 }
 
@@ -155,55 +168,99 @@ body {
 
 .screen small {
   color: #bfdbfe;
+  margin-top: 6px;
 }
 
 .mobileControls {
   position: fixed;
-  bottom: 25px;
+  bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
-  display: none;
-  gap: 25px;
-  z-index: 60;
+  display: flex;
+  gap: 22px;
+  z-index: 9999;
+  touch-action: none;
 }
 
 .mobileControls button {
-  width: 75px;
-  height: 55px;
+  width: 72px;
+  height: 56px;
   border: none;
   border-radius: 18px;
-  font-size: 28px;
-  background: rgba(255,255,255,0.18);
+  font-size: 27px;
+  background: rgba(255, 255, 255, 0.24);
   color: white;
   backdrop-filter: blur(12px);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.2);
+}
+
+.mobileControls button:active {
+  transform: scale(0.92);
 }
 
 @media (max-width: 600px) {
+  body {
+    background: #020617;
+  }
+
   .gameArea {
     width: 100vw;
+    height: 100dvh;
+    border-left: 5px solid #22c55e;
+    border-right: 5px solid #22c55e;
   }
 
   .hud {
-    width: 95%;
-    font-size: 14px;
+    top: 8px;
+    width: 94vw;
+    font-size: 12px;
+    padding: 10px;
+  }
+
+  .car {
+    width: 52px;
+    height: 88px;
+    bottom: 118px;
+  }
+
+  .enemy {
+    width: 52px;
+    height: 88px;
+  }
+
+  .car::before,
+  .enemy::before {
+    width: 34px;
+    height: 25px;
+    left: 9px;
+  }
+
+  .car::after,
+  .enemy::after {
+    width: 38px;
+    left: 7px;
+  }
+
+  .coin {
+    font-size: 28px;
+  }
+
+  .screen h1 {
+    font-size: 29px;
+  }
+
+  .screen p {
+    font-size: 17px;
   }
 
   .mobileControls {
-    display: flex;
+    bottom: 18px;
+    gap: 18px;
   }
-}
-.car {
-  z-index: 10;
-}
 
-.enemy {
-  z-index: 8;
-}
-
-.coin {
-  z-index: 9;
-}
-
-.mobileControls {
-  touch-action: none;
+  .mobileControls button {
+    width: 68px;
+    height: 54px;
+    font-size: 25px;
+  }
 }

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Neon Road Racer</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Raftar X Road</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -14,26 +16,29 @@
 
   <div class="gameArea" id="gameArea">
     <div class="screen" id="startScreen">
-      <h1>🚗 Raftar x Road🔥</h1>
-      <p>RAFTAR — Own the Highway...</p>
+      <h1>🚗 RAFTAR X ROAD</h1>
+      <p>Own the Highway.</p>
       <button onclick="startGame()">▶ Start Game</button>
-      <small>Controls: ← → / Mobile Buttons | P = Pause</small>
+      <small>Desktop: ← → | P = Pause</small>
+      <small>Mobile: Use bottom buttons</small>
     </div>
 
     <div class="roadLine line1"></div>
     <div class="roadLine line2"></div>
     <div class="roadLine line3"></div>
+    <div class="roadLine line4"></div>
 
     <div class="coin" id="coin">🪙</div>
 
     <div class="enemy enemy1"></div>
     <div class="enemy enemy2"></div>
+
     <div class="car" id="car"></div>
 
     <div class="screen" id="pauseScreen">
       <h1>⏸ Paused</h1>
       <p>Press P or Resume</p>
-      <button onclick="togglePause()">Resume</button>
+      <button onclick="togglePause()">▶ Resume</button>
     </div>
 
     <div class="screen" id="gameOver">

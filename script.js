@@ -21,12 +21,15 @@ const pauseBtn = document.getElementById("pauseBtn");
 let carLeft = 0;
 let score = 0;
 let coins = 0;
+
 let speed = 4;
 let maxSpeed = 13;
 let speedIncrease = 0.0018;
 
 let gameRunning = false;
 let paused = false;
+
+let animationId = null;
 
 let highScore = localStorage.getItem("carHighScore") || 0;
 highScoreText.textContent = highScore;
@@ -39,9 +42,10 @@ let keys = {
 function setInitialPositions() {
   const gameWidth = gameArea.offsetWidth;
 
-  carLeft = gameWidth / 2 - 27;
+  carLeft = gameWidth / 2 - car.offsetWidth / 2;
   car.style.left = carLeft + "px";
-  car.style.bottom = "40px";
+  car.style.transform = "none";
+  car.style.bottom = window.innerWidth <= 600 ? "118px" : "130px";
 
   enemies.forEach((enemy, index) => {
     enemy.style.left = randomLane() + "px";
@@ -66,49 +70,58 @@ document.addEventListener("keyup", function(e) {
   if (e.key === "ArrowRight") keys.right = false;
 });
 
-function pressLeft(value) {
-  keys.left = value;
+function holdButton(button, direction) {
+  button.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keys[direction] = true;
+  });
+
+  button.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keys[direction] = false;
+  });
+
+  button.addEventListener("touchcancel", function(e) {
+    e.preventDefault();
+    keys[direction] = false;
+  });
+
+  button.addEventListener("mousedown", function() {
+    keys[direction] = true;
+  });
+
+  button.addEventListener("mouseup", function() {
+    keys[direction] = false;
+  });
+
+  button.addEventListener("mouseleave", function() {
+    keys[direction] = false;
+  });
 }
 
-function pressRight(value) {
-  keys.right = value;
-}
+holdButton(leftBtn, "left");
+holdButton(rightBtn, "right");
 
-leftBtn.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  pressLeft(true);
-});
-
-leftBtn.addEventListener("touchend", (e) => {
-  e.preventDefault();
-  pressLeft(false);
-});
-
-rightBtn.addEventListener("touchstart", (e) => {
-  e.preventDefault();
-  pressRight(true);
-});
-
-rightBtn.addEventListener("touchend", (e) => {
-  e.preventDefault();
-  pressRight(false);
-});
-
-leftBtn.addEventListener("mousedown", () => pressLeft(true));
-leftBtn.addEventListener("mouseup", () => pressLeft(false));
-
-rightBtn.addEventListener("mousedown", () => pressRight(true));
-rightBtn.addEventListener("mouseup", () => pressRight(false));
-
-if (pauseBtn) {
-  pauseBtn.addEventListener("click", togglePause);
-}
+pauseBtn.addEventListener("click", togglePause);
 
 function startGame() {
   startScreen.style.display = "none";
+  pauseScreen.style.display = "none";
+  gameOverBox.style.display = "none";
+
+  score = 0;
+  coins = 0;
+  speed = 4;
+
+  scoreText.textContent = score;
+  coinsText.textContent = coins;
+
   setInitialPositions();
+
   gameRunning = true;
   paused = false;
+  pauseBtn.textContent = "⏸";
+
   gameLoop();
 }
 
@@ -117,10 +130,7 @@ function togglePause() {
 
   paused = !paused;
   pauseScreen.style.display = paused ? "flex" : "none";
-
-  if (pauseBtn) {
-    pauseBtn.textContent = paused ? "▶️" : "⏸";
-  }
+  pauseBtn.textContent = paused ? "▶️" : "⏸";
 
   if (!paused) {
     gameLoop();
@@ -137,11 +147,11 @@ function moveCar() {
   const gameWidth = gameArea.offsetWidth;
   const carWidth = car.offsetWidth;
 
-  if (keys.left && carLeft > 10) {
+  if (keys.left && carLeft > 8) {
     carLeft -= 7;
   }
 
-  if (keys.right && carLeft < gameWidth - carWidth - 10) {
+  if (keys.right && carLeft < gameWidth - carWidth - 8) {
     carLeft += 7;
   }
 
@@ -150,10 +160,10 @@ function moveCar() {
 
 function moveRoadLines() {
   lines.forEach(line => {
-    let top = parseFloat(window.getComputedStyle(line).top);
+    let top = parseFloat(line.style.top || window.getComputedStyle(line).top);
     top += speed;
 
-    if (top > window.innerHeight) {
+    if (top > gameArea.offsetHeight) {
       top = -120;
     }
 
@@ -163,10 +173,10 @@ function moveRoadLines() {
 
 function moveEnemies() {
   enemies.forEach(enemy => {
-    let top = parseFloat(window.getComputedStyle(enemy).top);
+    let top = parseFloat(enemy.style.top || window.getComputedStyle(enemy).top);
     top += speed;
 
-    if (top > window.innerHeight) {
+    if (top > gameArea.offsetHeight) {
       top = -220;
       enemy.style.left = randomLane() + "px";
 
@@ -183,10 +193,10 @@ function moveEnemies() {
 }
 
 function moveCoin() {
-  let top = parseFloat(window.getComputedStyle(coin).top);
+  let top = parseFloat(coin.style.top || window.getComputedStyle(coin).top);
   top += speed;
 
-  if (top > window.innerHeight) {
+  if (top > gameArea.offsetHeight) {
     top = -300;
     coin.style.left = randomLane() + "px";
   }
@@ -207,7 +217,8 @@ function moveCoin() {
 
 function randomLane() {
   const gameWidth = gameArea.offsetWidth;
-  return Math.floor(Math.random() * (gameWidth - 90) + 20);
+  const maxLeft = gameWidth - 75;
+  return Math.floor(Math.random() * (maxLeft - 15) + 15);
 }
 
 function isCollide(a, b) {
@@ -225,17 +236,20 @@ function isCollide(a, b) {
 function gameLoop() {
   if (!gameRunning || paused) return;
 
+  cancelAnimationFrame(animationId);
+
   increaseSpeedNaturally();
   moveCar();
   moveRoadLines();
   moveEnemies();
   moveCoin();
 
-  requestAnimationFrame(gameLoop);
+  animationId = requestAnimationFrame(gameLoop);
 }
 
 function endGame() {
   gameRunning = false;
+  cancelAnimationFrame(animationId);
 
   if (score > highScore) {
     highScore = score;
@@ -249,10 +263,10 @@ function endGame() {
 }
 
 function restartGame() {
-  location.reload();
+  startGame();
 }
 
-window.addEventListener("resize", () => {
+window.addEventListener("resize", function() {
   if (!gameRunning) {
     setInitialPositions();
   }
