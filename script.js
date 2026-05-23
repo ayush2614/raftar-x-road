@@ -28,7 +28,6 @@ let speedIncrease = 0.0018;
 
 let gameRunning = false;
 let paused = false;
-
 let animationId = null;
 
 let highScore = localStorage.getItem("carHighScore") || 0;
@@ -43,9 +42,8 @@ function setInitialPositions() {
   const gameWidth = gameArea.offsetWidth;
 
   carLeft = gameWidth / 2 - car.offsetWidth / 2;
-  car.style.left = carLeft + "px";
-  car.style.transform = "none";
-  car.style.bottom = window.innerWidth <= 600 ? "118px" : "130px";
+  car.style.left = "0px";
+  car.style.transform = `translateX(${carLeft}px)`;
 
   enemies.forEach((enemy, index) => {
     enemy.style.left = randomLane() + "px";
@@ -56,7 +54,7 @@ function setInitialPositions() {
   coin.style.top = "-300px";
 }
 
-document.addEventListener("keydown", function(e) {
+document.addEventListener("keydown", function (e) {
   if (e.key === "ArrowLeft") keys.left = true;
   if (e.key === "ArrowRight") keys.right = true;
 
@@ -65,36 +63,36 @@ document.addEventListener("keydown", function(e) {
   }
 });
 
-document.addEventListener("keyup", function(e) {
+document.addEventListener("keyup", function (e) {
   if (e.key === "ArrowLeft") keys.left = false;
   if (e.key === "ArrowRight") keys.right = false;
 });
 
 function holdButton(button, direction) {
-  button.addEventListener("touchstart", function(e) {
+  button.addEventListener("touchstart", function (e) {
     e.preventDefault();
     keys[direction] = true;
   });
 
-  button.addEventListener("touchend", function(e) {
+  button.addEventListener("touchend", function (e) {
     e.preventDefault();
     keys[direction] = false;
   });
 
-  button.addEventListener("touchcancel", function(e) {
+  button.addEventListener("touchcancel", function (e) {
     e.preventDefault();
     keys[direction] = false;
   });
 
-  button.addEventListener("mousedown", function() {
+  button.addEventListener("mousedown", function () {
     keys[direction] = true;
   });
 
-  button.addEventListener("mouseup", function() {
+  button.addEventListener("mouseup", function () {
     keys[direction] = false;
   });
 
-  button.addEventListener("mouseleave", function() {
+  button.addEventListener("mouseleave", function () {
     keys[direction] = false;
   });
 }
@@ -148,14 +146,14 @@ function moveCar() {
   const carWidth = car.offsetWidth;
 
   if (keys.left && carLeft > 8) {
-    carLeft -= 7;
+    carLeft -= 10;
   }
 
   if (keys.right && carLeft < gameWidth - carWidth - 8) {
-    carLeft += 7;
+    carLeft += 10;
   }
 
-  car.style.left = carLeft + "px";
+  car.style.transform = `translateX(${carLeft}px)`;
 }
 
 function moveRoadLines() {
@@ -217,8 +215,7 @@ function moveCoin() {
 
 function randomLane() {
   const gameWidth = gameArea.offsetWidth;
-  const maxLeft = gameWidth - 75;
-  return Math.floor(Math.random() * (maxLeft - 15) + 15);
+  return Math.floor(Math.random() * (gameWidth - 80) + 10);
 }
 
 function isCollide(a, b) {
@@ -236,9 +233,8 @@ function isCollide(a, b) {
 function gameLoop() {
   if (!gameRunning || paused) return;
 
-  cancelAnimationFrame(animationId);
-
   increaseSpeedNaturally();
+
   moveCar();
   moveRoadLines();
   moveEnemies();
@@ -266,7 +262,7 @@ function restartGame() {
   startGame();
 }
 
-window.addEventListener("resize", function() {
+window.addEventListener("resize", function () {
   if (!gameRunning) {
     setInitialPositions();
   }
