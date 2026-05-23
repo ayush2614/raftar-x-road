@@ -192,3 +192,18 @@ body {
     display: flex;
   }
 }
+.car {
+  z-index: 10;
+}
+
+.enemy {
+  z-index: 8;
+}
+
+.coin {
+  z-index: 9;
+}
+
+.mobileControls {
+  touch-action: none;
+}
