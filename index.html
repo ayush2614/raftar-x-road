@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Neon Road Racer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="hud">
+    <span>🏁 Score: <b id="score">0</b></span>
+    <span>🪙 Coins: <b id="coins">0</b></span>
+    <span>🏆 High: <b id="highScore">0</b></span>
+  </div>
+
+  <div class="gameArea" id="gameArea">
+    <div class="screen" id="startScreen">
+      <h1>🚗 Raftar x Road🔥</h1>
+      <p>RAFTAR — Own the Highway...</p>
+      <button onclick="startGame()">▶ Start Game</button>
+      <small>Controls: ← → / Mobile Buttons | P = Pause</small>
+    </div>
+
+    <div class="roadLine line1"></div>
+    <div class="roadLine line2"></div>
+    <div class="roadLine line3"></div>
+
+    <div class="coin" id="coin">🪙</div>
+
+    <div class="enemy enemy1"></div>
+    <div class="enemy enemy2"></div>
+    <div class="car" id="car"></div>
+
+    <div class="screen" id="pauseScreen">
+      <h1>⏸ Paused</h1>
+      <p>Press P or Resume</p>
+      <button onclick="togglePause()">Resume</button>
+    </div>
+
+    <div class="screen" id="gameOver">
+      <h1>💥 Game Over</h1>
+      <p>Your Score: <span id="finalScore">0</span></p>
+      <p>Coins: <span id="finalCoins">0</span></p>
+      <button onclick="restartGame()">🔄 Restart</button>
+    </div>
+  </div>
+
+  <div class="mobileControls">
+    <button id="leftBtn">⬅️</button>
+    <button id="pauseBtn">⏸</button>
+    <button id="rightBtn">➡️</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
